@@ -1,0 +1,42 @@
+/* Estilos CSS customizados - style.css */
+body {
+    font-family: 'Inter', sans-serif;
+    /* As classes do Tailwind no body (como bg-slate-900) cuidarão do resto */
+}
+
+.timer-display {
+    font-size: 6rem; /* Tamanho maior para o temporizador */
+    line-height: 1;
+}
+
+.btn-mode.active {
+    /* As classes de modo ativo do Tailwind serão aplicadas via JS,
+       mas podemos manter esta se quisermos um estilo base que não dependa do JS para o estado 'active' inicial.
+       No entanto, a lógica JS atual já lida com as classes do Tailwind para o estado ativo.
+       Para simplificar e confiar totalmente no Tailwind via JS, esta regra pode até ser removida
+       ou ajustada se houver um estilo base específico que você queira APENAS via CSS.
+       Por agora, o JS já adiciona 'bg-indigo-600' e 'text-white' (ou similar) quando ativo.
+       Manterei aqui caso você queira adicionar um estilo base que não seja do Tailwind para '.active'.
+       Se o JS falhar, esta classe não terá muito efeito visual sem cores definidas aqui.
+       No nosso caso, o JS adiciona classes do Tailwind como 'bg-indigo-600' quando um botão de modo está ativo.
+       A classe 'active' em si é mais um marcador para o JS e para os estilos do Tailwind aplicados.
+    */
+    /* Exemplo de como você poderia adicionar um estilo extra não-Tailwind: */
+    /* border-bottom: 2px solid #818CF8; */ /* Apenas um exemplo */
+}
+
+.progress-ring_svg {
+    transform: rotate(-90deg);
+}
+
+.progress-ring_circle {
+    transition: stroke-dashoffset 0.35s;
+    transform: rotate(-90deg); /* Mantido aqui para garantir a orientação correta */
+    transform-origin: 50% 50%;
+}
+
+/* Nota: A maioria dos estilos visuais (cores, espaçamentos, etc.)
+   ainda vem das classes utilitárias do Tailwind CSS diretamente no HTML.
+   Este arquivo 'style.css' é para estilos mais específicos ou globais
+   que não são facilmente cobertos por utilitários ou para manter
+   as definições de fonte e algumas classes customizadas como as do anel de progresso. */

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temporizador Pomodoro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-slate-900 text-white flex flex-col items-center justify-center min-h-screen p-4 transition-colors duration-500">
+
+    <div class="bg-slate-800 p-6 sm:p-8 rounded-xl shadow-2xl w-full max-w-md text-center">
+        <h1 class="text-3xl sm:text-4xl font-bold mb-6 text-indigo-400">Temporizador Pomodoro</h1>
+
+        <div class="mb-6 flex justify-center space-x-2 sm:space-x-3">
+            <button id="workBtn" class="btn-mode px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base font-medium rounded-lg bg-slate-700 hover:bg-indigo-500 transition-colors active">Trabalho</button>
+            <button id="shortBreakBtn" class="btn-mode px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base font-medium rounded-lg bg-slate-700 hover:bg-indigo-500 transition-colors">Pausa Curta</button>
+            <button id="longBreakBtn" class="btn-mode px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base font-medium rounded-lg bg-slate-700 hover:bg-indigo-500 transition-colors">Pausa Longa</button>
+        </div>
+
+        <div class="relative w-48 h-48 sm:w-64 sm:h-64 mx-auto mb-6">
+            <svg class="progress-ring_svg w-full h-full" viewBox="0 0 120 120">
+                <circle class="progress-ring_background_circle" stroke="#374151" stroke-width="8" fill="transparent" r="52" cx="60" cy="60"/>
+                <circle id="progressRing" class="progress-ring_circle text-indigo-500"
+                        stroke="currentColor" stroke-width="8"
+                        fill="transparent"
+                        r="52" cx="60" cy="60"
+                        stroke-linecap="round"
+                />
+            </svg>
+            <div id="timeDisplay" class="absolute inset-0 flex items-center justify-center timer-display font-bold text-slate-100">
+                25:00
+            </div>
+        </div>
+
+        <div class="flex justify-center space-x-3 sm:space-x-4 mb-6">
+            <button id="startPauseBtn" class="px-6 py-3 sm:px-8 sm:py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-md transition-all duration-150 ease-in-out transform hover:scale-105">
+                Iniciar
+            </button>
+            <button id="resetBtn" class="px-6 py-3 sm:px-8 sm:py-3 bg-slate-600 hover:bg-slate-700 text-white font-semibold rounded-lg shadow-md transition-all duration-150 ease-in-out transform hover:scale-105">
+                Reiniciar
+            </button>
+        </div>
+
+        <div class="text-sm sm:text-base text-slate-400">
+            <p>Pomodoros Concluídos: <span id="pomodoroCount" class="font-bold text-indigo-400">0</span></p>
+            <p>Ciclos até pausa longa: <span id="cyclesToLongBreak" class="font-bold text-indigo-400">4</span></p>
+        </div>
+
+        <div id="customTimeModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden z-50 p-4">
+            <div class="bg-slate-800 p-6 rounded-lg shadow-xl w-full max-w-sm">
+                <h2 class="text-xl font-semibold mb-4 text-indigo-400">Definir Tempos (minutos)</h2>
+                <div class="space-y-3 mb-6">
+                    <div>
+                        <label for="customWork" class="block text-sm font-medium text-slate-300">Trabalho:</label>
+                        <input type="number" id="customWork" value="25" class="mt-1 block w-full bg-slate-700 border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white">
+                    </div>
+                    <div>
+                        <label for="customShortBreak" class="block text-sm font-medium text-slate-300">Pausa Curta:</label>
+                        <input type="number" id="customShortBreak" value="5" class="mt-1 block w-full bg-slate-700 border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white">
+                    </div>
+                    <div>
+                        <label for="customLongBreak" class="block text-sm font-medium text-slate-300">Pausa Longa:</label>
+                        <input type="number" id="customLongBreak" value="15" class="mt-1 block w-full bg-slate-700 border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white">
+                    </div>
+                     <div>
+                        <label for="customCycles" class="block text-sm font-medium text-slate-300">Ciclos para Pausa Longa:</label>
+                        <input type="number" id="customCycles" value="4" min="1" class="mt-1 block w-full bg-slate-700 border-slate-600 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-white">
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button id="saveCustomTime" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-md transition-colors">Salvar</button>
+                    <button id="cancelCustomTime" class="px-4 py-2 bg-slate-600 hover:bg-slate-700 text-white font-semibold rounded-lg shadow-md transition-colors">Cancelar</button>
+                </div>
+            </div>
+        </div>
+        <button id="openSettingsBtn" class="mt-6 text-xs text-slate-500 hover:text-indigo-400 underline">
+            Configurar Tempos
+        </button>
+    </div>
+
+    <script src="script.js" defer></script>
+</body>
+</html>
